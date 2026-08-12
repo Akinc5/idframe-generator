@@ -12,7 +12,7 @@ export const FramePreview: React.FC<FramePreviewProps> = ({ members }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.5);
 
-  // Proper ResizeObserver — measures the container width and scales to fit
+  // Compute scale properly based on container width
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;

@@ -45,32 +45,32 @@ function App() {
   };
 
   return (
-    // Single viewport — no page scroll
-    <main className="h-screen w-screen overflow-hidden relative flex flex-col" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="min-h-screen w-full relative" style={{ fontFamily: "'Inter', sans-serif" }}>
       <GoaBackground />
 
-{/* Navbar — fixed height */}
+      {/* Navbar */}
       <div className="relative z-10 flex-shrink-0">
         <Navbar />
       </div>
 
-      {/* Main content grid — fills remaining height, no overflow */}
-      <div className="relative z-10 flex-1 min-h-0 flex gap-0 px-6 pb-6">
+      {/* ── MOBILE: stack vertically, scroll freely ── */}
+      {/* ── DESKTOP: side-by-side locked to viewport ── */}
+      <div className="relative z-10 flex flex-col lg:flex-row lg:h-[calc(100vh-72px)] lg:overflow-hidden gap-4 px-4 pb-6 lg:px-6 lg:pb-4">
 
-        {/* ── Left panel: scrollable internally ── */}
-        <div className="w-[340px] flex-shrink-0 flex flex-col gap-3 h-full">
+        {/* ── LEFT PANEL ── */}
+        <div className="w-full lg:w-[320px] xl:w-[360px] flex-shrink-0 flex flex-col gap-3">
 
           {/* Squad roster card */}
-          <div className="bg-white border-2 border-[#e0d5c5] shadow-[5px_5px_0_rgba(0,0,0,0.07)] px-4 py-3 relative flex-shrink-0">
+          <div className="bg-white border-2 border-[#e0d5c5] shadow-[4px_4px_0_rgba(0,0,0,0.07)] px-4 py-3 relative">
             <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 bg-[#F43F5E] rounded-full border-2 border-white shadow z-10"></div>
             <div className="flex items-center justify-between mt-1">
               <div>
-                <h2 className="font-black text-[#1a1a1a] text-sm leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>Squad Roster</h2>
+                <h2 className="font-black text-[#1a1a1a] text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>Squad Roster</h2>
                 <p className="text-[#8B4513] text-[11px] font-bold">{members.length}/4 builders</p>
               </div>
               {members.length < 4 && (
                 <button onClick={addMember}
-                  className="bg-[#F97316] text-white w-7 h-7 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[2px_2px_0_rgba(0,0,0,0.15)] font-black">
+                  className="bg-[#F97316] text-white w-7 h-7 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[2px_2px_0_rgba(0,0,0,0.15)]">
                   <Plus size={14} />
                 </button>
               )}
@@ -79,39 +79,32 @@ function App() {
 
           {/* Member tabs */}
           {members.length > 1 && (
-            <div className="flex gap-1.5 overflow-x-auto flex-shrink-0 pb-0.5">
+            <div className="flex gap-1.5 overflow-x-auto pb-0.5 flex-shrink-0">
               {members.map((m, i) => (
                 <button key={m.id} onClick={() => setActiveId(m.id)}
-                  className={`flex items-center gap-1 px-3 py-1.5 text-xs font-black whitespace-nowrap transition-all border-2 shadow-[2px_2px_0_rgba(0,0,0,0.08)] flex-shrink-0 ${
+                  className={`flex items-center gap-1 px-3 py-1.5 text-xs font-black whitespace-nowrap border-2 shadow-[2px_2px_0_rgba(0,0,0,0.08)] flex-shrink-0 transition-all ${
                     activeId === m.id ? 'bg-[#F97316] text-white border-[#d4610f]' : 'bg-white text-[#555] border-[#D2B48C] hover:border-[#F97316]'
                   }`}>
                   {m.name || `Builder ${i + 1}`}
-                  {members.length > 1 && (
-                    <Trash2 size={10} className="opacity-60 hover:opacity-100"
-                      onClick={(e) => { e.stopPropagation(); removeMember(m.id); }} />
-                  )}
+                  <Trash2 size={10} className="opacity-60 hover:opacity-100"
+                    onClick={(e) => { e.stopPropagation(); removeMember(m.id); }} />
                 </button>
               ))}
             </div>
           )}
 
-          {/* Scrollable form card */}
+          {/* Form card — on mobile just full height, on desktop scrolls internally */}
           <div
-            className="flex-1 min-h-0 overflow-y-auto bg-[#FFFDF7] border-2 border-[#e0d5c5] shadow-[6px_6px_0_rgba(0,0,0,0.06)] p-5 flex flex-col gap-6 relative custom-scrollbar"
+            className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto bg-[#FFFDF7] border-2 border-[#e0d5c5] shadow-[5px_5px_0_rgba(0,0,0,0.06)] p-5 flex flex-col gap-5 relative custom-scrollbar"
             style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/paper.png')" }}
           >
-            {/* Corner tape strips */}
-            <div className="absolute top-0 left-0 w-16 h-5 bg-[#FFD580]/70 -rotate-45 -translate-x-5 translate-y-2.5 origin-center pointer-events-none"></div>
-            <div className="absolute top-0 right-0 w-16 h-5 bg-[#FF9A9E]/60 rotate-45 translate-x-5 translate-y-2.5 origin-center pointer-events-none"></div>
+            {/* Corner tape decorations */}
+            <div className="absolute top-0 left-0 w-14 h-4 bg-[#FFD580]/70 -rotate-45 -translate-x-4 translate-y-2 origin-center pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-14 h-4 bg-[#FF9A9E]/60 rotate-45 translate-x-4 translate-y-2 origin-center pointer-events-none"></div>
 
-            <PhotoUploader
-              photo={activeMember.photo}
-              onPhotoUpload={(photo) => updateActiveMember({ photo })}
-            />
+            <PhotoUploader photo={activeMember.photo} onPhotoUpload={(photo) => updateActiveMember({ photo })} />
             <IdentityForm
-              name={activeMember.name}
-              handle={activeMember.handle}
-              igHandle={activeMember.igHandle}
+              name={activeMember.name} handle={activeMember.handle} igHandle={activeMember.igHandle}
               onNameChange={(name) => updateActiveMember({ name })}
               onHandleChange={(handle) => updateActiveMember({ handle })}
               onIgHandleChange={(igHandle) => updateActiveMember({ igHandle })}
@@ -137,8 +130,8 @@ function App() {
             )}
           </div>
 
-          {/* 3 small beach polaroids pinned at the bottom of the left col */}
-          <div className="flex gap-2 flex-shrink-0 pt-1">
+          {/* Beach polaroids — visible on desktop only (takes too much space on mobile) */}
+          <div className="hidden lg:flex gap-2 flex-shrink-0 pt-1">
             {[
               { src: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=120&q=70', rot: '-rotate-3', tape: 'bg-[#FFD580]/80' },
               { src: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=120&q=70', rot: 'rotate-2', tape: 'bg-[#FF9A9E]/70' },
@@ -152,31 +145,30 @@ function App() {
           </div>
         </div>
 
-        {/* ── Right panel: preview + buttons ── */}
-        <div className="flex-1 min-w-0 flex flex-col items-center justify-center gap-4 pl-8 h-full">
+        {/* ── RIGHT PANEL ── */}
+        <div className="flex-1 min-w-0 flex flex-col gap-4 lg:h-full">
 
-          {/* Preview label sticker */}
-          <div className="self-start flex-shrink-0 relative">
+          {/* Preview label */}
+          <div className="flex-shrink-0 relative self-start">
             <div className="absolute -top-2.5 left-5 w-16 h-4 bg-[#FFD580]/80 rounded-sm transform rotate-2"></div>
-            <div className="bg-white border-2 border-[#D2B48C] shadow-[3px_3px_0_rgba(0,0,0,0.08)] px-5 py-2 relative">
-              <span className="font-black text-[#1a1a1a] text-base tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Your Card Preview
-              </span>
+            <div className="bg-white border-2 border-[#D2B48C] shadow-[3px_3px_0_rgba(0,0,0,0.08)] px-4 py-2 relative">
+              <span className="font-black text-[#1a1a1a] text-sm lg:text-base" style={{ fontFamily: "'Playfair Display', serif" }}>Your Card Preview</span>
               <span className="ml-2 bg-[#F43F5E] text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">LIVE</span>
             </div>
           </div>
 
-          {/* Card preview — takes remaining space */}
-          <div className="w-full flex-1 min-h-0 flex items-center">
+          {/* Card preview */}
+          <div className="w-full lg:flex-1 lg:min-h-0 lg:flex lg:items-center">
             <FramePreview members={members} />
           </div>
 
-          <div className="flex-shrink-0">
+          {/* Actions */}
+          <div className="flex-shrink-0 pb-2">
             <Actions members={members} />
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
